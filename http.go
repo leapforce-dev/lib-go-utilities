@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -16,8 +17,9 @@ func DoWithRetry(client *http.Client, request *http.Request, maxAttempts int, sl
 	for attempt <= maxAttempts {
 		res, err := client.Do(request)
 
-		if res.StatusCode%100 == 5 { // retry in case of status 500 range (server error)
+		if res.StatusCode/100 == 5 { // retry in case of status 500 range (server error)
 			attempt++
+			fmt.Printf("Starting attempt %v for %s\n", attempt, request.URL.String())
 			time.Sleep(time.Duration(sleepSeconds) * time.Second)
 		} else {
 			return res, err
