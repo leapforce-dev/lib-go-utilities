@@ -22,6 +22,10 @@ func DoWithRetry(client *http.Client, request *http.Request, maxAttempts int, sl
 			fmt.Printf("Starting attempt %v for %s\n", attempt, request.URL.String())
 			time.Sleep(time.Duration(sleepSeconds) * time.Second)
 		} else {
+			if err == nil && (res.StatusCode/100 == 4 || res.StatusCode/100 == 5) {
+				err = fmt.Errorf("Server returned statuscode %v", res.StatusCode)
+			}
+
 			return res, err
 		}
 	}
