@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
 // DoWithRetry executes http.Request and retries in case of 500 range status code
 //
-func DoWithRetry(client *http.Client, request *http.Request, maxAttempts int, sleepSeconds int32) (*http.Response, error) {
+func DoWithRetry(client *http.Client, request *http.Request, maxAttempts int, sleepSeconds int32) (*http.Response, *errortools.Error) {
 	if client == nil || request == nil {
 		return nil, nil
 	}
@@ -26,7 +28,7 @@ func DoWithRetry(client *http.Client, request *http.Request, maxAttempts int, sl
 				err = fmt.Errorf("Server returned statuscode %v", res.StatusCode)
 			}
 
-			return res, err
+			return res, errortools.ErrorMessage(err)
 		}
 	}
 
