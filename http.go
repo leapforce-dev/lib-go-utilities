@@ -15,9 +15,6 @@ func DoWithRetry(client *http.Client, request *http.Request, maxRetries uint, se
 		return nil, nil
 	}
 
-	e := new(errortools.Error)
-	e.SetRequest(request)
-
 	attempt := uint(1)
 	for attempt <= maxRetries+1 {
 		response, err := client.Do(request)
@@ -31,9 +28,16 @@ func DoWithRetry(client *http.Client, request *http.Request, maxRetries uint, se
 				err = fmt.Errorf("Server returned statuscode %v", response.StatusCode)
 			}
 
-			e.SetResponse(response)
-			e.SetMessage(err.Error())
-			return response, e
+			if err != nil {
+				e := new(errortools.Error)
+				e.SetRequest(request)
+				e.SetResponse(response)
+				e.SetMessage(err.Error())
+
+				return response, e
+			}
+
+			return response, nil
 		}
 	}
 
