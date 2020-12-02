@@ -15,20 +15,25 @@ func DoWithRetry(client *http.Client, request *http.Request, maxAttempts int, sl
 		return nil, nil
 	}
 
+	e := new(errortools.Error)
+	e.SetRequest(request)
+
 	attempt := 1
 	for attempt <= maxAttempts {
-		res, err := client.Do(request)
+		response, err := client.Do(request)
 
-		if res.StatusCode/100 == 5 { // retry in case of status 500 range (server error)
+		if response.StatusCode/100 == 5 { // retry in case of status 500 range (server error)
 			attempt++
 			fmt.Printf("Starting attempt %v for %s\n", attempt, request.URL.String())
 			time.Sleep(time.Duration(sleepSeconds) * time.Second)
 		} else {
-			if err == nil && (res.StatusCode/100 == 4 || res.StatusCode/100 == 5) {
-				err = fmt.Errorf("Server returned statuscode %v", res.StatusCode)
+			if err == nil && (response.StatusCode/100 == 4 || response.StatusCode/100 == 5) {
+				err = fmt.Errorf("Server returned statuscode %v", response.StatusCode)
 			}
 
-			return res, errortools.ErrorMessage(err)
+			e.SetResponse(response)
+			e.SetMessage(err.Error())
+			return response, e
 		}
 	}
 
