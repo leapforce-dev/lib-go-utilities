@@ -16,7 +16,12 @@ func DoWithRetry(client *http.Client, request *http.Request, maxRetries uint, se
 	}
 
 	attempt := uint(1)
-	for attempt <= maxRetries+1 {
+
+	isLastAttempt := func() bool {
+		return attempt == maxRetries+1
+	}
+
+	for !isLastAttempt() {
 		if attempt > 1 {
 			fmt.Printf("Starting attempt %v for %s %s\n", attempt, request.Method, request.URL.String())
 			time.Sleep(time.Duration(secondsBetweenRetries) * time.Second)
@@ -24,7 +29,7 @@ func DoWithRetry(client *http.Client, request *http.Request, maxRetries uint, se
 
 		response, err := client.Do(request)
 
-		if response.StatusCode/100 == 5 { // retry in case of status 500 range (server error)
+		if response.StatusCode/100 == 5 && !isLastAttempt() { // retry in case of status 500 range (server error)
 			attempt++
 		} else {
 			if err == nil && (response.StatusCode/100 == 4 || response.StatusCode/100 == 5) {
