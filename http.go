@@ -28,6 +28,8 @@ func DoWithRetry(client *http.Client, request *http.Request, maxRetries uint, se
 		}
 
 		response, err := client.Do(request)
+		fmt.Println(response)
+		fmt.Println(err)
 
 		if response.StatusCode/100 == 5 && !isLastAttempt() { // retry in case of status 500 range (server error)
 			attempt++
