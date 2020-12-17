@@ -38,6 +38,8 @@ var (
 )
 
 func ValidateFormat(email string) error {
+	fmt.Println("use github.com/goware/emailx!")
+
 	if !emailRegexp.MatchString(email) {
 		return ErrBadFormat
 	}
@@ -45,6 +47,8 @@ func ValidateFormat(email string) error {
 }
 
 func ValidateHost(email string) error {
+	fmt.Println("use github.com/goware/emailx!")
+
 	_, host := split(email)
 	mx, err := net.LookupMX(host)
 	if err != nil {
@@ -75,6 +79,8 @@ func ValidateHost(email string) error {
 // DialTimeout returns a new Client connected to an SMTP server at addr.
 // The addr must include a port, as in "mail.example.com:smtp".
 func DialTimeout(addr string, timeout time.Duration) (*smtp.Client, error) {
+	fmt.Println("use github.com/goware/emailx!")
+
 	conn, err := net.DialTimeout("tcp", addr, timeout)
 	if err != nil {
 		return nil, err
