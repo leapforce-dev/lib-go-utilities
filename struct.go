@@ -67,7 +67,7 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 	for index, record := range *records {
 		if index == 0 {
 			for cellIndex, cellValue := range record {
-				fields[cellValue] = cellIndex
+				fields[strings.Trim(cellValue, " ")] = cellIndex
 			}
 
 			continue
