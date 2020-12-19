@@ -85,7 +85,7 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 			fieldIndex, ok := fields[fieldTag]
 
 			if ok {
-				value := record[fieldIndex]
+				value := strings.Trim(record[fieldIndex], " ")
 
 				switch new.FieldByName(fieldName).Kind() {
 				case reflect.String:
