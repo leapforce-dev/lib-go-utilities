@@ -65,6 +65,16 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 	fields := make(map[string]int)
 
 	for index, record := range *records {
+		for j, v := range record {
+			//remove inivisible characters and trim
+			v = strings.ReplaceAll(v, string([]byte{byte(239)}), "")
+			v = strings.ReplaceAll(v, string([]byte{byte(187)}), "")
+			v = strings.ReplaceAll(v, string([]byte{byte(191)}), "")
+			v = strings.Trim(v, " ")
+
+			(*records)[index][j] = v
+		}
+
 		if index == 0 {
 			for cellIndex, cellValue := range record {
 				fields[strings.Trim(cellValue, " ")] = cellIndex
