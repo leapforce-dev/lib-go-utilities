@@ -74,6 +74,8 @@ github.com/labstack/echo/v4 v4.1.11/go.mod h1:i541M3Fj6f76NZtHSj7TXnyM8n2gaodfvf
 github.com/labstack/gommon v0.3.0/go.mod h1:MULnywXg0yavhxWKc+lOruYdAhDwPK9wf0OL7NoOu+k=
 github.com/leapforce-libraries/go_errortools v0.0.0-20201201173353-36163d22d838 h1:1wns5BKCD7eZrGFU4ug6IKlgvItXlu96cNAD6CTySgA=
 github.com/leapforce-libraries/go_errortools v0.0.0-20201201173353-36163d22d838/go.mod h1:SmFPi+pPS5oWI/PfOv25kuIOBEMgr52dezH+dsmRCfQ=
+github.com/leapforce-libraries/go_errortools v0.0.0-20201204210737-d975f1003e2b h1:VBo8fpvnWiqeEfBrtYkKfAU6ZZTicX7nmTwT/BKsNQA=
+github.com/leapforce-libraries/go_errortools v0.0.0-20201204210737-d975f1003e2b/go.mod h1:SmFPi+pPS5oWI/PfOv25kuIOBEMgr52dezH+dsmRCfQ=
 github.com/leapforce-libraries/go_types v0.0.0-20201116193520-d5f73916424b h1:HyAuC9pOtQ0yIw7Nkb/R/RxEEyz9lOH88A4UONVhOEo=
 github.com/leapforce-libraries/go_types v0.0.0-20201116193520-d5f73916424b/go.mod h1:0k0QPi4o2OO3yau759B2U5XIEPbuYTf56QxyF8WdV4o=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
