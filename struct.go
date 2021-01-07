@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -176,4 +177,42 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 	}
 
 	return &records, nil
+}
+
+func SetStructField(model interface{}, fieldName string, value interface{}) *errortools.Error {
+	val := reflect.ValueOf(model)
+	s := val.Elem()
+	f := s.FieldByNameFunc(func(name string) bool {
+		return strings.ToLower(name) == strings.ToLower(fieldName)
+	})
+
+	if f.IsValid() {
+		if f.CanSet() {
+			if f.Kind() == reflect.String {
+				_value, ok := value.(string)
+				if !ok {
+					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
+				}
+				f.SetString(_value)
+			}
+		}
+	}
+
+	return nil
+}
+
+func GetStructFieldString(model interface{}, fieldName string) string {
+	val := reflect.ValueOf(model)
+	s := val.Elem()
+	f := s.FieldByNameFunc(func(name string) bool {
+		return strings.ToLower(name) == strings.ToLower(fieldName)
+	})
+
+	if f.IsValid() {
+		if f.Kind() == reflect.String {
+			return f.String()
+		}
+	}
+
+	return ""
 }
