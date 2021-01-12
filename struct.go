@@ -180,8 +180,17 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 }
 
 func SetStructField(model interface{}, fieldName string, value interface{}) *errortools.Error {
+	if reflect.TypeOf(model).Kind() != reflect.Ptr {
+		return errortools.ErrorMessage("Model is not a pointer.")
+	}
+
 	val := reflect.ValueOf(model)
 	s := val.Elem()
+
+	if reflect.TypeOf(s).Kind() != reflect.Struct {
+		return errortools.ErrorMessage("Model is not a pointer to a struct.")
+	}
+
 	f := s.FieldByNameFunc(func(name string) bool {
 		return strings.ToLower(name) == strings.ToLower(fieldName)
 	})

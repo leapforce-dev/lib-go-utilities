@@ -2,7 +2,10 @@ package utilities
 
 import (
 	"strconv"
+	"strings"
 	"time"
+
+	"cloud.google.com/go/civil"
 )
 
 type Dictionary map[string]string
@@ -11,6 +14,8 @@ func (dictionary *Dictionary) get(key string) *string {
 	if dictionary == nil {
 		return nil
 	}
+
+	key = strings.ToLower(strings.Trim(key, " "))
 
 	s, ok := map[string]string(*dictionary)[key]
 	if ok {
@@ -25,7 +30,7 @@ func (dictionary *Dictionary) GetString(key string) *string {
 }
 
 func (dictionary *Dictionary) GetInt(key string) *int {
-	s := dictionary.GetString(key)
+	s := dictionary.get(key)
 
 	if s == nil {
 		return nil
@@ -42,7 +47,7 @@ func (dictionary *Dictionary) GetInt(key string) *int {
 }
 
 func (dictionary *Dictionary) GetInt64(key string) *int64 {
-	s := dictionary.GetString(key)
+	s := dictionary.get(key)
 
 	if s == nil {
 		return nil
@@ -57,7 +62,7 @@ func (dictionary *Dictionary) GetInt64(key string) *int64 {
 }
 
 func (dictionary *Dictionary) GetFloat64(key string) *float64 {
-	s := dictionary.GetString(key)
+	s := dictionary.get(key)
 
 	if s == nil {
 		return nil
@@ -72,7 +77,7 @@ func (dictionary *Dictionary) GetFloat64(key string) *float64 {
 }
 
 func (dictionary *Dictionary) GetBool(key string) *bool {
-	s := dictionary.GetString(key)
+	s := dictionary.get(key)
 
 	if s == nil {
 		return nil
@@ -87,7 +92,7 @@ func (dictionary *Dictionary) GetBool(key string) *bool {
 }
 
 func (dictionary *Dictionary) GetTime(key string, layout string) *time.Time {
-	s := dictionary.GetString(key)
+	s := dictionary.get(key)
 
 	if s == nil {
 		return nil
@@ -99,4 +104,21 @@ func (dictionary *Dictionary) GetTime(key string, layout string) *time.Time {
 	}
 
 	return &time
+}
+
+func (dictionary *Dictionary) GetDate(key string, layout string) *civil.Date {
+	s := dictionary.get(key)
+
+	if s == nil {
+		return nil
+	}
+
+	time, err := time.Parse(layout, *s)
+	if err != nil {
+		return nil
+	}
+
+	date := civil.DateOf(time)
+
+	return &date
 }
