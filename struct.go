@@ -187,7 +187,7 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 	val := reflect.ValueOf(model)
 	s := val.Elem()
 
-	if reflect.TypeOf(s).Kind() != reflect.Struct {
+	if s.Kind() != reflect.Struct {
 		return errortools.ErrorMessage("Model is not a pointer to a struct.")
 	}
 
