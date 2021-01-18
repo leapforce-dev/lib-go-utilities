@@ -191,25 +191,28 @@ func StructToURL(model interface{}) (*string, *errortools.Error) {
 		return nil, errortools.ErrorMessage("The interface is not a pointer.")
 	}
 
-	v := reflect.ValueOf(model).Elem()
-	if v.Kind() != reflect.Struct {
+	p := reflect.ValueOf(model) //pointer
+	i := p.Elem()               //interface
+	s := i.Elem()               //struct
+
+	if s.Kind() != reflect.Struct {
 		return nil, errortools.ErrorMessage("The interface is not a pointer to a struct.")
 	}
 
-	structType := reflect.TypeOf(model).Elem()
-
 	values := url.Values{}
 
-	for j := 0; j < v.NumField(); j++ {
-		switch v.Field(j).Kind() {
+	for j := 0; j < s.NumField(); j++ {
+		fieldName := s.Type().Field(j).Name
+
+		switch s.Field(j).Kind() {
 		case reflect.String:
-			values.Set(structType.Field(j).Name, v.Field(j).String())
+			values.Set(fieldName, s.Field(j).String())
 			break
 		case reflect.Int:
-			values.Set(structType.Field(j).Name, strconv.FormatInt(v.Field(j).Int(), 10))
+			values.Set(fieldName, strconv.FormatInt(s.Field(j).Int(), 10))
 			break
 		case reflect.Float64:
-			values.Set(structType.Field(j).Name, strconv.FormatFloat(v.Field(j).Float(), 'f', 5, 64))
+			values.Set(fieldName, strconv.FormatFloat(s.Field(j).Float(), 'f', 5, 64))
 			break
 		default:
 			break
