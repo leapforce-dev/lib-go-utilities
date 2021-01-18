@@ -183,6 +183,10 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 }
 
 func StructToURL(model interface{}) (*string, *errortools.Error) {
+	if IsNil(model) {
+		return nil, nil
+	}
+
 	if reflect.TypeOf(model).Kind() != reflect.Ptr {
 		return nil, errortools.ErrorMessage("The interface is not a pointer.")
 	}
