@@ -2,6 +2,7 @@ package utilities
 
 import (
 	"fmt"
+	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
@@ -179,6 +180,41 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 	}
 
 	return &records, nil
+}
+
+func StructToURL(model interface{}) (*string, *errortools.Error) {
+	if reflect.TypeOf(model).Kind() != reflect.Ptr {
+		return nil, errortools.ErrorMessage("The interface is not a pointer.")
+	}
+
+	v := reflect.ValueOf(model).Elem()
+	if v.Kind() != reflect.Struct {
+		return nil, errortools.ErrorMessage("The interface is not a pointer to a struct.")
+	}
+
+	structType := reflect.TypeOf(model).Elem()
+
+	values := url.Values{}
+
+	for j := 0; j < v.NumField(); j++ {
+		switch v.Field(j).Kind() {
+		case reflect.String:
+			values.Set(structType.Field(j).Name, v.Field(j).String())
+			break
+		case reflect.Int:
+			values.Set(structType.Field(j).Name, strconv.FormatInt(v.Field(j).Int(), 10))
+			break
+		case reflect.Float64:
+			values.Set(structType.Field(j).Name, strconv.FormatFloat(v.Field(j).Float(), 'f', 5, 64))
+			break
+		default:
+			break
+		}
+	}
+
+	url := values.Encode()
+
+	return &url, nil
 }
 
 func SetStructField(model interface{}, fieldName string, value interface{}) *errortools.Error {
