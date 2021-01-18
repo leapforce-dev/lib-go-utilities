@@ -182,7 +182,7 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 	return &records, nil
 }
 
-func StructToURL(model interface{}) (*string, *errortools.Error) {
+func StructToURL(model interface{}, tag *string) (*string, *errortools.Error) {
 	if IsNil(model) {
 		return nil, nil
 	}
@@ -203,6 +203,10 @@ func StructToURL(model interface{}) (*string, *errortools.Error) {
 
 	for j := 0; j < s.NumField(); j++ {
 		fieldName := s.Type().Field(j).Name
+
+		if tag != nil {
+			fieldName = s.Type().Field(j).Tag.Get(*tag)
+		}
 
 		switch s.Field(j).Kind() {
 		case reflect.String:
