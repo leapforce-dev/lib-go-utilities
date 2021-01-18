@@ -5,7 +5,9 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
+	"cloud.google.com/go/bigquery"
 	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
@@ -210,6 +212,7 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 	return nil
 }
 
+/*
 func GetStructFieldString(model interface{}, fieldName string) string {
 	val := reflect.ValueOf(model)
 	s := val.Elem()
@@ -217,11 +220,79 @@ func GetStructFieldString(model interface{}, fieldName string) string {
 		return strings.ToLower(name) == strings.ToLower(fieldName)
 	})
 
-	if f.IsValid() {
+	if !f.IsValid() {
+		return ""
+	}
+
 		if f.Kind() == reflect.String {
 			return f.String()
 		}
+	return ""
+}
+*/
+
+func GetStructFieldString(model interface{}, fieldName string) string {
+
+	f := reflect.ValueOf(model).Elem().FieldByName(fieldName)
+	if f.IsZero() {
+		return ""
 	}
 
-	return ""
+	fieldValue := f.Interface()
+	value := ""
+	switch v := fieldValue.(type) {
+
+	case bigquery.NullFloat64:
+		if v.Valid {
+			value = strconv.FormatFloat(v.Float64, 'f', -1, 64)
+		} else {
+			value = ""
+		}
+	case bigquery.NullInt64:
+		if v.Valid {
+			value = strconv.FormatInt(v.Int64, 10)
+		} else {
+			value = ""
+		}
+	case int64:
+		value = strconv.FormatInt(v, 10)
+	case int32:
+		value = strconv.FormatInt(int64(v), 10)
+	case int:
+		value = strconv.FormatInt(int64(v), 10)
+	case string:
+		value = v
+	case bool:
+		if v {
+			value = "TRUE"
+		}
+		value = "FALSE"
+	case bigquery.NullTimestamp:
+		if v.Valid {
+			value = v.Timestamp.Format("02-01-2006")
+		} else {
+			value = ""
+		}
+	case bigquery.NullDate:
+		if v.Valid {
+			if v.Date.Day == 1 && v.Date.Month == 1 && v.Date.Year == 1800 {
+				value = ""
+			} else {
+				value = fmt.Sprintf("%02d-%02d-%04d", v.Date.Day, v.Date.Month, v.Date.Year)
+			}
+		} else {
+			value = ""
+		}
+	case time.Time:
+		value = v.Format("02-01-2006")
+	case bigquery.NullString:
+		value = ""
+		if v.Valid {
+			value = v.StringVal
+		}
+	default:
+		value = ""
+	}
+
+	return value
 }
