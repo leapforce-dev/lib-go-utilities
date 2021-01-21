@@ -1,5 +1,11 @@
 package utilities
 
+import (
+	"time"
+
+	"cloud.google.com/go/civil"
+)
+
 func StringNotNil(value *string) string {
 	if value == nil {
 		return ""
@@ -38,4 +44,10 @@ func BoolNotNil(value *bool) bool {
 	}
 
 	return *value
+}
+
+func DateToTime(date civil.Date) time.Time {
+	t, _ := time.Parse("2006-01-02", date.String())
+
+	return t
 }
