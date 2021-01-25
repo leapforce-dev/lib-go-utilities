@@ -264,12 +264,35 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 
 	if f.IsValid() {
 		if f.CanSet() {
-			if f.Kind() == reflect.String {
+			switch f.Kind() {
+
+			case reflect.String:
 				_value, ok := value.(string)
 				if !ok {
 					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
 				}
 				f.SetString(_value)
+
+			case reflect.Int64:
+				_value, ok := value.(int64)
+				if !ok {
+					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
+				}
+				f.SetInt(_value)
+
+			case reflect.Float64:
+				_value, ok := value.(float64)
+				if !ok {
+					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
+				}
+				f.SetFloat(_value)
+
+			case reflect.Bool:
+				_value, ok := value.(bool)
+				if !ok {
+					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
+				}
+				f.SetBool(_value)
 			}
 		}
 	}
