@@ -264,60 +264,12 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 
 	if f.IsValid() {
 		if f.CanSet() {
-			switch f.Kind() {
-
-			case reflect.String:
-				_value, ok := value.(string)
-				if !ok {
-					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
-				}
-				f.SetString(_value)
-
-			case reflect.Int64:
-				_value, ok := value.(int64)
-				if !ok {
-					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
-				}
-				f.SetInt(_value)
-
-			case reflect.Float64:
-				_value, ok := value.(float64)
-				if !ok {
-					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
-				}
-				f.SetFloat(_value)
-
-			case reflect.Bool:
-				_value, ok := value.(bool)
-				if !ok {
-					return errortools.ErrorMessage(fmt.Sprintf("Field %s is not of type string", fieldName))
-				}
-				f.SetBool(_value)
-			}
+			f.Set(reflect.ValueOf(value))
 		}
 	}
 
 	return nil
 }
-
-/*
-func GetStructFieldString(model interface{}, fieldName string) string {
-	val := reflect.ValueOf(model)
-	s := val.Elem()
-	f := s.FieldByNameFunc(func(name string) bool {
-		return strings.ToLower(name) == strings.ToLower(fieldName)
-	})
-
-	if !f.IsValid() {
-		return ""
-	}
-
-		if f.Kind() == reflect.String {
-			return f.String()
-		}
-	return ""
-}
-*/
 
 func GetStructFieldString(model interface{}, fieldName string) string {
 
