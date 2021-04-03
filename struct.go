@@ -336,3 +336,41 @@ func GetStructFieldString(model interface{}, fieldName string) string {
 
 	return value
 }
+
+func HasField(structSchema interface{}, fieldName *string, fieldSchema interface{}) (bool, *errortools.Error) {
+	if IsNil(structSchema) {
+		return false, nil
+	}
+
+	t := reflect.TypeOf(structSchema)
+
+	if t.Kind() == reflect.Ptr {
+		t = reflect.TypeOf(reflect.ValueOf(structSchema).Elem().Interface())
+	}
+
+	if t.Kind() != reflect.Struct {
+		return false, errortools.ErrorMessage("Passed schema is not a (pointer to a) struct")
+	}
+
+	if fieldName == nil && IsNil(fieldSchema) {
+		return true, nil
+	}
+
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		if fieldName != nil {
+			if f.Name != *fieldName {
+				continue
+			}
+		}
+		if !IsNil(fieldSchema) {
+			if reflect.TypeOf(fieldSchema) != f.Type {
+				continue
+			}
+		}
+
+		return true, nil
+	}
+
+	return false, nil
+}
