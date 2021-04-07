@@ -1,20 +1,29 @@
 package utilities
 
 import (
+	"fmt"
 	"os"
 
 	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
-func GetArguments(arguments ...*string) *errortools.Error {
+func GetArguments(required *int, arguments ...*string) *errortools.Error {
 	argsWithoutProg := os.Args[1:]
 
-	if len(argsWithoutProg) < len(arguments) {
+	_required := len(arguments)
+	if required != nil {
+		if *required > len(arguments) {
+			return errortools.ErrorMessage(fmt.Sprintf("%v arguemnts passed but required %v", len(arguments), *required))
+		}
+		_required = *required
+	}
+
+	if len(argsWithoutProg) < _required {
 		return errortools.ErrorMessage("Too little arguments passed.")
 	}
 
-	for index, argument := range arguments {
-		(*argument) = argsWithoutProg[index]
+	for index, arg := range argsWithoutProg {
+		*(arguments[index]) = arg
 	}
 
 	return nil
