@@ -23,6 +23,9 @@ func GetArguments(required *int, arguments ...*string) *errortools.Error {
 	}
 
 	for index, arg := range argsWithoutProg {
+		if index >= _required {
+			break
+		}
 		*(arguments[index]) = arg
 	}
 
