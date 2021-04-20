@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"fmt"
 	"time"
 
 	"cloud.google.com/go/civil"
@@ -50,4 +51,22 @@ func DateToTime(date civil.Date) time.Time {
 	t, _ := time.Parse("2006-01-02", date.String())
 
 	return t
+}
+
+func MonthStartDate(date civil.Date) civil.Date {
+	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%04d-%02d-01", date.Year, date.Month))
+
+	return civil.DateOf(t)
+}
+
+func MonthEndDate(date civil.Date) civil.Date {
+	year := date.Year
+	month := date.Month + 1
+	if month == 13 {
+		year++
+		month = 1
+	}
+	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%04d-%02d-01", year, month))
+
+	return civil.DateOf(t).AddDays(-1)
 }
