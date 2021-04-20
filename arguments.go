@@ -41,7 +41,7 @@ func GetArguments(required *int, arguments ...*string) (*map[string]string, *err
 	}
 
 	for index, arg := range args {
-		if index >= _required {
+		if index >= len(arguments) {
 			break
 		}
 		*(arguments[index]) = arg
