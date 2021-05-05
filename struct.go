@@ -271,6 +271,48 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 	return nil
 }
 
+func SetStructFieldByTag(model interface{}, tagName string, tag string, value interface{}) *errortools.Error {
+	if reflect.TypeOf(model).Kind() != reflect.Ptr {
+		return errortools.ErrorMessage("Model is not a pointer.")
+	}
+
+	val := reflect.ValueOf(model)
+	s := val.Elem()
+
+	if s.Kind() != reflect.Struct {
+		return errortools.ErrorMessage("Model is not a pointer to a struct.")
+	}
+
+	for i := 0; i < s.Type().NumField(); i++ {
+		// 1 create sqlSelect
+		// 2 register customfields: json tag -> fieldname
+		field := s.Type().Field(i)
+		_tag, ok := field.Tag.Lookup(tagName)
+
+		if !ok {
+			continue
+		}
+
+		index := strings.Index(_tag, ",")
+		if index >= 0 {
+			_tag = _tag[:index]
+		}
+
+		if _tag == tag {
+			f := s.FieldByName(field.Name)
+
+			if f.IsValid() {
+				if f.CanSet() {
+					f.Set(reflect.ValueOf(value))
+					return nil
+				}
+			}
+		}
+
+	}
+	return nil
+}
+
 func GetStructFieldString(model interface{}, fieldName string) string {
 
 	f := reflect.ValueOf(model).Elem().FieldByName(fieldName)
