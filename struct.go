@@ -121,10 +121,12 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 					}
 					break
 				default:
-					t := reflect.New(structType.Field(i).Type)
-					err := json.Unmarshal([]byte(value), &t)
+					// create pointer to new instance of type of field
+					t := reflect.New(structType.Field(i).Type).Interface()
+					// unmarshal to this type with input the json representation of the string value
+					err := json.Unmarshal([]byte(fmt.Sprintf("\"%s\"", value)), t)
 					if err == nil {
-						new.FieldByName(fieldName).Set(t)
+						new.FieldByName(fieldName).Set(reflect.ValueOf(t).Elem())
 					} else {
 						fmt.Println(err)
 					}
