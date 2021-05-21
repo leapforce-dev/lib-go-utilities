@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -106,6 +107,8 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 					new.FieldByName(fieldName).SetString(value)
 					break
 				case reflect.Int:
+				case reflect.Int32:
+				case reflect.Int64:
 					i, err := strconv.ParseInt(value, 10, 64)
 					if err == nil {
 						new.FieldByName(fieldName).SetInt(i)
@@ -117,6 +120,14 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 						new.FieldByName(fieldName).SetFloat(i)
 					}
 					break
+				default:
+					t := reflect.New(structType.Field(i).Type)
+					err := json.Unmarshal([]byte(value), &t)
+					if err == nil {
+						new.FieldByName(fieldName).Set(t)
+					} else {
+						fmt.Println(err)
+					}
 				}
 
 			}
