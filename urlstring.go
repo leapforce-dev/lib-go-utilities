@@ -34,6 +34,10 @@ func (_url *URLString) removeQueryParams(mode string, params []string) (changed 
 	}
 	u, _ := url.Parse((*_url).URL)
 
+	if u == nil {
+		return false
+	}
+
 	query := u.Query()
 
 	if len(query) > 0 {
