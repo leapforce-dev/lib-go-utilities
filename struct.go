@@ -37,6 +37,11 @@ func getTaggedNames(tag string, model interface{}, fieldOrTag string) string {
 			if fieldOrTag == "field" {
 				list += "," + field.Name
 			} else if fieldOrTag == "tag" {
+				i := strings.Index(value, ",")
+				if i >= 0 {
+					value = value[:i]
+				}
+
 				list += "," + value
 			}
 		}
