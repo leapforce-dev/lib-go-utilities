@@ -178,20 +178,7 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 		record := []string{}
 		v1 := v.Index(i)
 		for j := 0; j < v1.NumField(); j++ {
-			switch v1.Field(j).Kind() {
-			case reflect.String:
-				record = append(record, v1.Field(j).String())
-				break
-			case reflect.Int:
-				record = append(record, strconv.FormatInt(v1.Field(j).Int(), 10))
-				break
-			case reflect.Float64:
-				record = append(record, strconv.FormatFloat(v1.Field(j).Float(), 'f', 5, 64))
-				break
-			default:
-				record = append(record, "")
-				break
-			}
+			record = append(record, GetStructFieldStringByFieldIndex(v1.Addr().Interface(), j))
 		}
 
 		records = append(records, record)
@@ -331,12 +318,25 @@ func SetStructFieldByTag(model interface{}, tagName string, tag string, value in
 	return nil
 }
 
-func GetStructFieldString(model interface{}, fieldName string) string {
+func GetStructFieldStringByFieldIndex(model interface{}, index int) string {
+	f := reflect.ValueOf(model).Elem().FieldByIndex([]int{index})
+	if f.IsZero() {
+		return ""
+	}
 
+	return getStructFieldString(f)
+}
+
+func GetStructFieldStringByFieldName(model interface{}, fieldName string) string {
 	f := reflect.ValueOf(model).Elem().FieldByName(fieldName)
 	if f.IsZero() {
 		return ""
 	}
+
+	return getStructFieldString(f)
+}
+
+func getStructFieldString(f reflect.Value) string {
 
 	fieldValue := f.Interface()
 	value := ""
