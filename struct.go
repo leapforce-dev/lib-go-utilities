@@ -354,6 +354,8 @@ func getStructFieldString(f reflect.Value) string {
 		} else {
 			value = ""
 		}
+	case float64:
+		value = strconv.FormatFloat(v, 'f', -1, 64)
 	case int64:
 		value = strconv.FormatInt(v, 10)
 	case int32:
