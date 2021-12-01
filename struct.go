@@ -320,6 +320,9 @@ func SetStructFieldByTag(model interface{}, tagName string, tag string, value in
 
 func GetStructFieldStringByFieldIndex(model interface{}, index int) string {
 	f := reflect.ValueOf(model).Elem().FieldByIndex([]int{index})
+	if !f.IsValid() {
+		return ""
+	}
 	if f.IsZero() {
 		return ""
 	}
@@ -329,6 +332,9 @@ func GetStructFieldStringByFieldIndex(model interface{}, index int) string {
 
 func GetStructFieldStringByFieldName(model interface{}, fieldName string) string {
 	f := reflect.ValueOf(model).Elem().FieldByName(fieldName)
+	if !f.IsValid() {
+		return ""
+	}
 	if f.IsZero() {
 		return ""
 	}
