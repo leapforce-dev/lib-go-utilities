@@ -43,7 +43,7 @@ func DoWithRetry(client *http.Client, request *http.Request, maxRetries *uint) (
 			retry++
 		} else {
 			if err == nil && (statusCode/100 == 4 || statusCode/100 == 5) {
-				err = fmt.Errorf("Server returned statuscode %v", statusCode)
+				err = fmt.Errorf("server returned statuscode %v", statusCode)
 			}
 
 			if err != nil {

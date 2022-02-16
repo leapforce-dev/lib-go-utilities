@@ -110,7 +110,6 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 				switch new.FieldByName(fieldName).Kind() {
 				case reflect.String:
 					new.FieldByName(fieldName).SetString(value)
-					break
 				case reflect.Int:
 				case reflect.Int32:
 				case reflect.Int64:
@@ -118,13 +117,11 @@ func StringArrayToStruct(records *[][]string, model interface{}) *errortools.Err
 					if err == nil {
 						new.FieldByName(fieldName).SetInt(i)
 					}
-					break
 				case reflect.Float64:
 					i, err := strconv.ParseFloat(value, 64)
 					if err == nil {
 						new.FieldByName(fieldName).SetFloat(i)
 					}
-					break
 				default:
 					// create pointer to new instance of type of field
 					t := reflect.New(structType.Field(i).Type).Interface()
@@ -234,15 +231,11 @@ func StructToURL(model interface{}, tag *string) (*string, *errortools.Error) {
 		switch field.Kind() {
 		case reflect.String:
 			values.Set(fieldName, field.String())
-			break
 		case reflect.Int:
 			values.Set(fieldName, strconv.FormatInt(field.Int(), 10))
-			break
 		case reflect.Float64:
 			values.Set(fieldName, strconv.FormatFloat(field.Float(), 'f', 5, 64))
-			break
 		default:
-			break
 		}
 	}
 
@@ -264,7 +257,7 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 	}
 
 	f := s.FieldByNameFunc(func(name string) bool {
-		return strings.ToLower(name) == strings.ToLower(fieldName)
+		return strings.EqualFold(name, fieldName)
 	})
 
 	if f.IsValid() {
@@ -319,6 +312,10 @@ func SetStructFieldByTag(model interface{}, tagName string, tag string, value in
 }
 
 func GetStructFieldStringByFieldIndex(model interface{}, index int) string {
+	return GetStructFieldStringByFieldIndexWithLayouts(model, index, nil)
+}
+
+func GetStructFieldStringByFieldIndexWithLayouts(model interface{}, index int, fieldLayouts *FieldLayouts) string {
 	f := reflect.ValueOf(model).Elem().FieldByIndex([]int{index})
 	if !f.IsValid() {
 		return ""
@@ -327,10 +324,26 @@ func GetStructFieldStringByFieldIndex(model interface{}, index int) string {
 		return ""
 	}
 
-	return getStructFieldString(f)
+	return getStructFieldString(f, fieldLayouts)
+}
+
+const (
+	defaultTimestampLayout string = "2006-01-02 15:04:05"
+	defaultDateLayout      string = "02-01-2006"
+	defaultTimeLayout      string = "02-01-2006"
+)
+
+type FieldLayouts struct {
+	TimestampLayout *string
+	DateLayout      *string
+	TimeLayout      *string
 }
 
 func GetStructFieldStringByFieldName(model interface{}, fieldName string) string {
+	return GetStructFieldStringByFieldNameWithLayouts(model, fieldName, nil)
+}
+
+func GetStructFieldStringByFieldNameWithLayouts(model interface{}, fieldName string, fieldLayouts *FieldLayouts) string {
 	f := reflect.ValueOf(model).Elem().FieldByName(fieldName)
 	if !f.IsValid() {
 		return ""
@@ -339,10 +352,29 @@ func GetStructFieldStringByFieldName(model interface{}, fieldName string) string
 		return ""
 	}
 
-	return getStructFieldString(f)
+	return getStructFieldString(f, fieldLayouts)
 }
 
-func getStructFieldString(f reflect.Value) string {
+func getStructFieldString(f reflect.Value, fieldLayouts *FieldLayouts) string {
+	timestampLayout := func() string {
+		if fieldLayouts != nil {
+			if fieldLayouts.TimestampLayout != nil {
+				return *fieldLayouts.TimestampLayout
+			}
+		}
+
+		return defaultTimestampLayout
+	}
+
+	dateLayout := func() string {
+		if fieldLayouts != nil {
+			if fieldLayouts.DateLayout != nil {
+				return *fieldLayouts.DateLayout
+			}
+		}
+
+		return defaultDateLayout
+	}
 
 	fieldValue := f.Interface()
 	value := ""
@@ -377,7 +409,7 @@ func getStructFieldString(f reflect.Value) string {
 		value = "FALSE"
 	case bigquery.NullTimestamp:
 		if v.Valid {
-			value = v.Timestamp.Format("02-01-2006")
+			value = v.Timestamp.Format(timestampLayout())
 		} else {
 			value = ""
 		}
@@ -386,13 +418,14 @@ func getStructFieldString(f reflect.Value) string {
 			if v.Date.Day == 1 && v.Date.Month == 1 && v.Date.Year == 1800 {
 				value = ""
 			} else {
-				value = fmt.Sprintf("%02d-%02d-%04d", v.Date.Day, v.Date.Month, v.Date.Year)
+				time, _ := time.Parse("02-01-2006", fmt.Sprintf("%02d-%02d-%04d", v.Date.Day, v.Date.Month, v.Date.Year))
+				value = time.Format(dateLayout())
 			}
 		} else {
 			value = ""
 		}
 	case time.Time:
-		value = v.Format("02-01-2006")
+		value = v.Format(timestampLayout())
 	case bigquery.NullString:
 		value = ""
 		if v.Valid {
