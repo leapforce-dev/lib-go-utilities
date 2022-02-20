@@ -10,29 +10,29 @@ const (
 	modeExclude string = "exclude"
 )
 
-type URLString struct {
-	URL string
+type UrlString struct {
+	Url string
 }
 
-func (_url *URLString) RemoveQueryParamsAll() (changed bool) {
+func (_url *UrlString) RemoveQueryParamsAll() (changed bool) {
 	return _url.removeQueryParams(modeAll, []string{})
 }
 
-func (_url *URLString) RemoveQueryParamsExclude(params []string) (changed bool) {
+func (_url *UrlString) RemoveQueryParamsExclude(params []string) (changed bool) {
 	return _url.removeQueryParams(modeExclude, params)
 }
 
-func (_url *URLString) RemoveQueryParamsInclude(params []string) (changed bool) {
+func (_url *UrlString) RemoveQueryParamsInclude(params []string) (changed bool) {
 	return _url.removeQueryParams(modeInclude, params)
 }
 
 // RemoveQueryParams removes specified query parameters from query string
 //
-func (_url *URLString) removeQueryParams(mode string, params []string) (changed bool) {
+func (_url *UrlString) removeQueryParams(mode string, params []string) (changed bool) {
 	if _url == nil {
 		return false
 	}
-	u, _ := url.Parse((*_url).URL)
+	u, _ := url.Parse((*_url).Url)
 
 	if u == nil {
 		return false
@@ -64,8 +64,8 @@ func (_url *URLString) removeQueryParams(mode string, params []string) (changed 
 			u.RawQuery = query.Encode()
 		}
 		_url1 := u.String()
-		if _url.URL != _url1 {
-			_url.URL = _url1
+		if _url.Url != _url1 {
+			_url.Url = _url1
 			return true
 		}
 	}

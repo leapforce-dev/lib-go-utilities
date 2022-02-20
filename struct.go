@@ -184,7 +184,7 @@ func StructToStringArray(model interface{}, includeHeaders bool) (*[][]string, *
 	return &records, nil
 }
 
-func StructToURL(model interface{}, tag *string) (*string, *errortools.Error) {
+func StructToUrl(model interface{}, tag *string) (*string, *errortools.Error) {
 	if IsNil(model) {
 		return nil, nil
 	}
