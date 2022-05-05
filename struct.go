@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/bigquery"
+	"cloud.google.com/go/civil"
 	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
@@ -270,6 +271,10 @@ func SetStructField(model interface{}, fieldName string, value interface{}) *err
 }
 
 func SetStructFieldByTag(model interface{}, tagName string, tag string, value interface{}) *errortools.Error {
+	return SetStructFieldByTagWithFieldLayouts(model, tagName, tag, value, nil)
+}
+
+func SetStructFieldByTagWithFieldLayouts(model interface{}, tagName string, tag string, value interface{}, fieldLayouts *FieldLayouts) *errortools.Error {
 	if reflect.TypeOf(model).Kind() != reflect.Ptr {
 		return errortools.ErrorMessage("Model is not a pointer.")
 	}
@@ -301,6 +306,27 @@ func SetStructFieldByTag(model interface{}, tagName string, tag string, value in
 
 			if f.IsValid() {
 				if f.CanSet() {
+					if fieldLayouts != nil {
+						fieldValue := f.Interface()
+						switch fieldValue.(type) {
+						case civil.Date:
+							if fieldLayouts.DateLayout != nil {
+								t, err := time.Parse(*fieldLayouts.DateLayout, fmt.Sprintf("%v", value))
+								if err != nil {
+									return errortools.ErrorMessage(err)
+								}
+								value = civil.DateOf(t)
+							}
+						case time.Time:
+							if fieldLayouts.TimeLayout != nil {
+								t, err := time.Parse(*fieldLayouts.TimeLayout, fmt.Sprintf("%v", value))
+								if err != nil {
+									return errortools.ErrorMessage(err)
+								}
+								value = t
+							}
+						}
+					}
 					f.Set(reflect.ValueOf(value))
 					return nil
 				}
