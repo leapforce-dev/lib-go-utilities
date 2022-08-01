@@ -8,13 +8,18 @@ import (
 	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
-func GetArguments(required *int, arguments ...*string) (*map[string]string, *errortools.Error) {
-	argsWithoutProg := os.Args[1:]
-	var args []string = []string{}
-	var prefixedArgs map[string]string = make(map[string]string)
+func GetArguments(required *int, argsWithoutProg *[]string, arguments ...*string) (*map[string]string, *errortools.Error) {
+	if argsWithoutProg == nil {
+		// read args from os
+		argsWithoutProg_ := os.Args[1:]
+		argsWithoutProg = &argsWithoutProg_
+	}
+
+	var args []string
+	var prefixedArgs = make(map[string]string)
 
 	// first extract arguments passed with - prefix
-	for _, arg := range argsWithoutProg {
+	for _, arg := range *argsWithoutProg {
 		if strings.HasPrefix(arg, "-") {
 			if len(arg) == 1 {
 				return nil, errortools.ErrorMessage("Invalid argument '-'")
