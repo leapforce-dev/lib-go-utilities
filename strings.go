@@ -27,7 +27,7 @@ func IsLetter(s string) bool {
 	return true
 }
 
-func NormalizeString(s string, removeSymbols bool) string {
+func NormalizeString(s string, removeSymbols bool, removeRegex *string) string {
 	s = strings.Trim(s, " ")
 
 	reader := bytes.NewReader([]byte(s))
@@ -105,8 +105,13 @@ func NormalizeString(s string, removeSymbols bool) string {
 		}
 	}
 
+	if removeRegex != nil {
+		re := regexp.MustCompile(*removeRegex)
+		result = re.ReplaceAllString(result, "")
+	}
+
 	if removeSymbols {
-		re, _ := regexp.Compile(`\W`)
+		re := regexp.MustCompile(`[^\w|\s]`)
 		result = re.ReplaceAllString(result, "")
 	}
 
