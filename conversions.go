@@ -42,6 +42,30 @@ func Int64NotNil(value *int64) int64 {
 	return *value
 }
 
+func Int64ArrayNotNil(value *[]int64) []int64 {
+	if value == nil {
+		return []int64{}
+	}
+
+	return *value
+}
+
+func Float32NotNil(value *float32) float32 {
+	if value == nil {
+		return float32(0)
+	}
+
+	return *value
+}
+
+func Float64NotNil(value *float64) float64 {
+	if value == nil {
+		return float64(0)
+	}
+
+	return *value
+}
+
 func BoolNotNil(value *bool) bool {
 	if value == nil {
 		return false
