@@ -5,6 +5,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha512"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -209,4 +210,37 @@ func pkcs7Unpad(data []byte, blocklen int) ([]byte, error) {
 	}
 
 	return data[:len(data)-padlen], nil
+}
+
+func Encrypt(b []byte, cipherKey string) (string, error) {
+	a := AesCrypto{
+		Padding:    NoPadding,
+		CipherMode: CBC,
+	}
+
+	sha512Hash := sha512.New()
+	sha512Hash.Write([]byte(cipherKey))
+
+	h := sha512Hash.Sum(nil)
+
+	encrypted, err := a.Encrypt(b, h[:24])
+	if err != nil {
+		return "", err
+	}
+
+	return encrypted, nil
+}
+
+func Decrypt(b []byte, cipherKey string) (string, error) {
+	a := AesCrypto{
+		Padding:    NoPadding,
+		CipherMode: CBC,
+	}
+
+	sha512Hash := sha512.New()
+	sha512Hash.Write([]byte(cipherKey))
+
+	h := sha512Hash.Sum(nil)
+
+	return a.Decrypt(string(b), h[:24], "")
 }
