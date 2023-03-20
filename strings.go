@@ -28,7 +28,11 @@ func IsLetter(s string) bool {
 }
 
 func NormalizeString(s string, removeSymbols bool, removeRegex *string) string {
-	s = strings.Trim(s, " ")
+	s = strings.TrimSpace(s)
+
+	if s == "" {
+		return ""
+	}
 
 	reader := bytes.NewReader([]byte(s))
 
