@@ -80,6 +80,12 @@ func DateToTime(date civil.Date) time.Time {
 	return t
 }
 
+func TimeToTime(t civil.Time) time.Time {
+	t_, _ := time.Parse("15:04:05", t.String())
+
+	return t_
+}
+
 func MonthStartDate(date civil.Date) civil.Date {
 	t, _ := time.Parse("2006-01-02", fmt.Sprintf("%04d-%02d-01", date.Year, date.Month))
 
