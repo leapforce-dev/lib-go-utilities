@@ -1,4 +1,4 @@
-module github.com/leapforce-dev/go-lib-utilities
+module github.com/leapforce-dev/lib-go-utilities
 
 go 1.22
 
