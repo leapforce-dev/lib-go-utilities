@@ -2,7 +2,7 @@ package utilities
 
 import (
 	"fmt"
-	errortools "github.com/leapforce-dev/lib-go-errortools"
+	errortools "github.com/leapforce-libraries/go_errortools"
 	"os"
 	"strings"
 )

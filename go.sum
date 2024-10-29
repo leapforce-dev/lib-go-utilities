@@ -84,8 +84,8 @@ github.com/klauspost/compress v1.17.7 h1:ehO88t2UGzQK66LMdE8tibEd1ErmzZjNEqWkjLA
 github.com/klauspost/compress v1.17.7/go.mod h1:Di0epgTjJY877eYKx5yC51cX2A2Vl2ibi7bDH9ttBbw=
 github.com/klauspost/cpuid/v2 v2.2.5 h1:0E5MSMDEoAulmXNFquVs//DdoomxaoTY1kUhbc/qbZg=
 github.com/klauspost/cpuid/v2 v2.2.5/go.mod h1:Lcz8mBdAVJIBVzewtcLocK12l3Y+JytZYpaMropDUws=
-github.com/leapforce-dev/lib-go-errortools v0.0.0-20241029164741-68975aaea68b h1:DizIPffulvI6UY4PqjhoDVUql0zMGQzEcuAYSbccHfI=
-github.com/leapforce-dev/lib-go-errortools v0.0.0-20241029164741-68975aaea68b/go.mod h1:eX+j7iL9ci68iuGDrr1UEONpUaHKrlGObWqxEZ3mj4g=
+github.com/leapforce-libraries/go_errortools v0.0.0-20241029220115-b5c993a285b0 h1:x1KmrNhp7y8nG+8HNX/eKsA2Q8etDzk1JTmsWvGzis0=
+github.com/leapforce-libraries/go_errortools v0.0.0-20241029220115-b5c993a285b0/go.mod h1:ytvUwp/lSpq5yhKSQf8nilA8BKz0uCG0WAr6q55o/7g=
 github.com/pierrec/lz4/v4 v4.1.18 h1:xaKrnTkyoqfh1YItXl56+6KJNVYWlEEPuAQW9xsplYQ=
 github.com/pierrec/lz4/v4 v4.1.18/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
 github.com/pingcap/errors v0.11.4 h1:lFuQV/oaUMGcD2tqt+01ROSmJs75VG1ToEOkZIZ4nE4=
