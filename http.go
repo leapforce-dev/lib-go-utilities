@@ -2,12 +2,11 @@ package utilities
 
 import (
 	"fmt"
+	errortools "github.com/leapforce-dev/lib-go-errortools"
 	"math"
 	"math/rand"
 	"net/http"
 	"time"
-
-	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
 const defaultMaxRetries uint = 5

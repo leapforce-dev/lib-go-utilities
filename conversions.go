@@ -1,13 +1,12 @@
 package utilities
 
 import (
+	"cloud.google.com/go/civil"
 	"fmt"
 	"math"
 	"strconv"
 	"strings"
 	"time"
-
-	"cloud.google.com/go/civil"
 )
 
 func StringNotNil(value *string) string {

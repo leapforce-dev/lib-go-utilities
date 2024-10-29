@@ -1,29 +1,26 @@
 package utilities
 
 import (
+	"cloud.google.com/go/bigquery"
+	"cloud.google.com/go/civil"
 	"encoding/json"
 	"fmt"
+	errortools "github.com/leapforce-dev/lib-go-errortools"
 	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
-
-	"cloud.google.com/go/bigquery"
-	"cloud.google.com/go/civil"
-	errortools "github.com/leapforce-libraries/go_errortools"
 )
 
 // GetTaggedFieldNames returns comma separated string of
 // fieldnames of struct having a specified tag
-//
 func GetTaggedFieldNames(tag string, model interface{}) string {
 	return getTaggedNames(tag, model, "field")
 }
 
 // GetTaggedTagNames returns comma separated string of
 // fieldnames of struct having a specified tag
-//
 func GetTaggedTagNames(tag string, model interface{}) string {
 	return getTaggedNames(tag, model, "tag")
 }

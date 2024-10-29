@@ -1,11 +1,10 @@
 package utilities
 
 import (
+	"cloud.google.com/go/civil"
 	"strconv"
 	"strings"
 	"time"
-
-	"cloud.google.com/go/civil"
 )
 
 type Dictionary map[string]string
